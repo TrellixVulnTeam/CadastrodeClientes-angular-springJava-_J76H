@@ -22,14 +22,25 @@ public class CustomerController {
     }
 
     @PostMapping
-    public Customer create(@Valid @RequestBody Customer customer){
+    public Customer post(@Valid @RequestBody Customer customer){
         return customers.save(customer);
     }
 
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<Long> deletePost(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Long> delete(@PathVariable(value = "id") Long id) {
         Customer customerId = customers.findById(id).orElseThrow();
         customers.delete(customerId);
-        return null;
+        return ResponseEntity.ok(id);
+    }
+    @PutMapping("/{id}/update")
+    public ResponseEntity<Customer> put(@PathVariable(value = "id") Long id
+            ,@Valid @RequestBody Customer updateCustomer){
+        Customer customer = customers.findById(id).orElseThrow();
+        customer.setEmail(updateCustomer.getEmail());
+        customer.setName(updateCustomer.getName());
+        customer.setPassword(updateCustomer.getPassword());
+        customer.setUsername(updateCustomer.getUsername());
+        final Customer update = customers.save(customer);
+        return ResponseEntity.ok(update);
     }
 }
